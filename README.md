@@ -324,6 +324,10 @@ python main.py
    - 检查文件路径是否正确
    - 验证 API 密钥格式
 
+3. Excel 打开乱码问题
+   - 在 Excel 中打开 `output.csv` 时，可能会遇到乱码问题。可以尝试使用其他文本编辑器（如 Notepad++）打开查看。
+   - 或者使用 `Excel`，选择数据来源->从文本/CSV，选择 `output.csv` 文件，选择 `UTF-8` 编码，即可正常显示。
+   
 ## 贡献指南
 
 欢迎提交 Issue 和 Pull Request 来帮助改进项目！

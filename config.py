@@ -1,6 +1,6 @@
 # OpenAI API 配置
 OPENAI_CONFIG = {
-    "api_key": "sk-TNiVDch5gjn5HV6W8332189f2fCf41849cA4B0880a7265A4",
+    "api_key": "sk-VV0A0AITAg9vQ5oB64545f85E26249C08c50A3A8A4F98424",
     "base_url": "https://api.vveai.com/v1",
     "model": "gpt-3.5-turbo",
     "temperature": 0.61
@@ -14,7 +14,7 @@ FILE_PATHS = {
 
 # 筛选配置
 FILTER_CONFIG = {
-    "year": "2024",          # 年份筛选
+    "year": "2022",          # 年份筛选
     "region": None,  # 支持多个地区，None 表示不筛选
     "country": None,         # 国家筛选，可以是字符串或列表，None 表示不筛选
     "village": None,         # 赛区筛选，可以是字符串或列表，None 表示不筛选
