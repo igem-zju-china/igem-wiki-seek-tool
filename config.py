@@ -20,7 +20,7 @@ FILTER_CONFIG = {
     "village": None,         # 赛区筛选，可以是字符串或列表，None 表示不筛选
     "kind": None,           # 项目类型筛选，可以是字符串或列表，None 表示不筛选
     "section": None,        # 部分筛选，可以是字符串或列表，None 表示不筛选
-    "is_remote": None       # 是否远程，None 表示不筛选，True/False 进行筛选
+    "isRemote": None       # 是否远程，None 表示不筛选，True/False 进行筛选
 }
 # 示例配置：
 # FILTER_CONFIG = {
