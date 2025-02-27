@@ -129,9 +129,11 @@ pip install -r requirements.txt
    - 等...
 
 2. **Region 地区**:
-   - Asia
-   - Europe
-   - America
+   - asia
+   - europe
+   - north-america
+   - africa
+   - ...
 
 3. **Section 类别**:
    - overgrad
@@ -205,7 +207,7 @@ pip install -r requirements.txt
 
 使用的筛选条件：
 - year: 2024
-- region: ['Asia', 'Europe']
+- region: ['asia', 'europe']
 - is_remote: False
 
 开始处理队伍信息...
