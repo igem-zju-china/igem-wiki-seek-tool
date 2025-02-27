@@ -1,0 +1,91 @@
+#注意！！在
+###############################n
+#中间的部分需要先改成自己的路径才能用！
+###############################n
+
+#依赖的库：pandas, requests, BeautifulSoup, openai（直接本地pip就行）
+import pandas as pd
+import requests
+from bs4 import BeautifulSoup
+from openai import OpenAI
+import time
+from tenacity import retry, stop_after_attempt, wait_exponential
+from config import *
+
+# 初始化 OpenAI 客户端
+client = OpenAI(
+    api_key=OPENAI_CONFIG["api_key"],
+    base_url=OPENAI_CONFIG["base_url"]
+)
+
+#iGEM官网上的teams list，这里我保存成csv格式了，下载之后修改好路径就能直接用
+#########################################################1
+df = pd.read_csv(FILE_PATHS["teams_file"])
+#########################################################1
+
+# 筛选出2024年的wiki
+filtered_urls = df[df['wiki'].astype(str).str.contains(SCRAPING_CONFIG["target_year"])]['wiki'].tolist()
+results = []
+
+# 创建一个空的DataFrame来存储结果
+result_df = pd.DataFrame(columns=["url", "content"])
+#########################################################2
+output_path = FILE_PATHS["output_file"]
+#########################################################2
+
+# 添加重试装饰器
+@retry(
+    stop=stop_after_attempt(RETRY_CONFIG["max_attempts"]),
+    wait=wait_exponential(multiplier=1, min=RETRY_CONFIG["min_wait"], max=RETRY_CONFIG["max_wait"])
+)
+def get_openai_response(prompt):
+    chat_response = client.chat.completions.create(
+        model=OPENAI_CONFIG["model"],
+        messages=[{"role": "user", "content": prompt}],
+        temperature=OPENAI_CONFIG["temperature"],
+    )
+    return chat_response.choices[0].message.content
+
+for url in filtered_urls:
+    if url.endswith("/"):
+        modified_url = url + "description"
+    else:
+        modified_url = url + "/description"
+        
+    print(f"正在处理: {modified_url}")
+    try:
+        response = requests.get(modified_url, timeout=SCRAPING_CONFIG["request_timeout"])
+        if response.status_code == 200:
+            html = response.text
+            soup = BeautifulSoup(html, "html.parser")
+            for tag in soup(["script", "style"]):
+                tag.extract()
+            text = soup.get_text(separator=" ", strip=True)
+            if len(text) > SCRAPING_CONFIG["max_text_length"]:
+                text = text[:SCRAPING_CONFIG["max_text_length"]]
+
+            # 使用配置的提示词模板
+            prompt = PROMPT_TEMPLATE.format(
+                year=SCRAPING_CONFIG["target_year"],
+                text=text
+            )
+
+            try:
+                answer = get_openai_response(prompt)
+                new_row = pd.DataFrame([{"url": modified_url, "content": answer}])
+            except Exception as e:
+                print(f"OpenAI API 调用失败: {e}")
+                new_row = pd.DataFrame([{"url": modified_url, "content": f"OpenAI error: {e}"}])
+        else:
+            new_row = pd.DataFrame([{"url": modified_url, "content": f"请求失败: {response.status_code}"}])
+    except Exception as e:
+        new_row = pd.DataFrame([{"url": modified_url, "content": f"错误: {e}"}])
+    
+    # 保存结果
+    result_df = pd.concat([result_df, new_row], ignore_index=True)
+    result_df.to_csv(output_path, index=False)
+    print(f"已保存结果：{modified_url}")
+    
+    time.sleep(SCRAPING_CONFIG["sleep_time"])
+
+print(f"所有 {SCRAPING_CONFIG['target_year']} 年的wiki已解析完成，结果保存在 {FILE_PATHS['output_file']}")
