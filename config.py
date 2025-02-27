@@ -12,9 +12,25 @@ FILE_PATHS = {
     "output_file": "./output.csv"
 }
 
+# 筛选配置
+FILTER_CONFIG = {
+    "year": "2024",          # 年份筛选
+    "region": None,  # 支持多个地区，None 表示不筛选
+    "country": None,         # 国家筛选，可以是字符串或列表，None 表示不筛选
+    "village": None,         # 赛区筛选，可以是字符串或列表，None 表示不筛选
+    "kind": None,           # 项目类型筛选，可以是字符串或列表，None 表示不筛选
+    "section": None,        # 部分筛选，可以是字符串或列表，None 表示不筛选
+    "is_remote": None       # 是否远程，None 表示不筛选，True/False 进行筛选
+}
+# 示例配置：
+# FILTER_CONFIG = {
+#     "year": "2024",
+#     "country": "China",
+#     "is_remote": False
+# }
+
 # 爬取配置
 SCRAPING_CONFIG = {
-    "target_year": "2024",  # 目标年份
     "request_timeout": 10,  # 请求超时时间（秒）
     "max_text_length": 7000,  # 最大文本长度
     "sleep_time": 1.00,  # 请求间隔时间（秒）
@@ -29,7 +45,7 @@ RETRY_CONFIG = {
 
 # 自定义提示词模板
 PROMPT_TEMPLATE = """请分析以下从{year}年iGEM参赛队伍的wiki网页中提取的文本，
-分析概述出该iGEM比赛参赛队伍的主要项目内容，包括：
+用中文分析概述出该iGEM比赛参赛队伍的主要项目内容，包括：
 1. 项目名称
 2. 问题背景
 3. 解决方案

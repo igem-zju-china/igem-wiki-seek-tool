@@ -11,11 +11,18 @@ WikiSeek 是一个专门为 iGEM 比赛设计的 Wiki 页面智能分析工具�
 - 🤖 利用 ChatGPT 生成项目要点分析
 - 💾 自动保存分析结果，支持断点续传
 - 🛡️ 内置重试机制，提高运行稳定性
-- ⚙️ 灵活的配置系统，支持自定义分析
 
-## 快速开始
+## 安装指南
 
-### 1. 环境配置
+### 1. 克隆项目
+
+```bash
+# 克隆项目
+git clone https://github.com/igem-zju-china/igem-wiki-seek-tool.git
+cd igem-wiki-seek-tool
+```
+
+### 2. 环境配置
 
 #### 使用 venv（推荐）
 ```bash
@@ -41,36 +48,117 @@ conda activate igem
 pip install -r requirements.txt
 ```
 
-### 2. 配置文件设置
-
+### 3. 准备数据文件
 1. 准备 `teams.csv` 文件（包含参赛队伍 Wiki 链接）
-2. 在 `config.py` 中设置：
+2. 将 `teams.csv` 放在项目根目录下
+
+### 4. 配置设置
+
+1. 在 `config.py` 中设置 API 配置：
    ```python
-   # OpenAI API 配置
    OPENAI_CONFIG = {
        "api_key": "your-api-key",
        "base_url": "your-api-base-url",
        "model": "gpt-3.5-turbo",
        "temperature": 0.61
    }
-
-   # 设置目标年份
-   SCRAPING_CONFIG = {
-       "target_year": "2024",  # 修改为目标年份
-       ...
-   }
-
-   # 自定义分析提示词
-   PROMPT_TEMPLATE = """
-   您的自定义提示词...
-   """
    ```
 
-### 3. 运行程序
+3. 设置筛选条件：
+   ```python
+   FILTER_CONFIG = {
+       "year": "2024",          # 年份筛选
+       "region": ["asia", "europe"],  # 支持多个地区
+       "country": ["USA", "FIN"],  # 支持多个国家
+       "village": None,         # 赛区筛选
+       "kind": None,           # 项目类型筛选
+       "section": None,        # 部分筛选
+       "is_remote": False      # 是否远程
+   }
+   ```
+
+### 筛选配置说明
+
+#### 基本用法
+- 单一值筛选：直接指定值
+  ```python
+  "country": "FIN"
+  ```
+
+- 多值筛选：使用列表
+  ```python
+  "region": ["asia", "europe"]
+  ```
+
+- 不进行筛选：使用 None
+  ```python
+  "village": None
+  ```
+
+#### 筛选示例
+
+1. **按地区和年份筛选**
+   ```python
+   FILTER_CONFIG = {
+       "year": "2024",
+       "region": ["Asia", "Europe"],
+       "country": None,
+       # 其他条件设为 None
+   }
+   ```
+
+2. **特定国家的非远程团队**
+   ```python
+   FILTER_CONFIG = {
+       "year": "2024",
+       "country": ["China", "Japan"],
+       "is_remote": False,
+       # 其他条件设为 None
+   }
+   ```
+
+3. **单一赛区筛选**
+   ```python
+   FILTER_CONFIG = {
+       "year": "2024",
+       "village": "Paris",
+       # 其他条件设为 None
+   }
+   ```
+
+#### 运行结果展示
+程序运行时会显示：
+- 筛选条件统计
+- 匹配到的队伍数量
+- 处理进度
+- 最终结果保存位置
+
+示例输出：
+```
+✅ 成功找到 50 支符合条件的队伍（原始数据共 300 支队伍）
+
+使用的筛选条件：
+- year: 2024
+- region: ['Asia', 'Europe']
+- is_remote: False
+
+开始处理队伍信息...
+```
+
+### 5. 运行程序
 
 ```bash
 python main.py
 ```
+
+## 主要功能
+
+- 🔍 自动筛选特定年份的参赛队伍 Wiki
+- 📑 智能提取 Description 页面的关键内容
+- 🤖 利用 ChatGPT 生成项目要点分析
+- 💾 自动保存分析结果，支持断点续传
+- 🛡️ 内置重试机制，提高运行稳定性
+- ⚙️ 灵活的配置系统，支持自定义分析
 
 ## 配置说明
 

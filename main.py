@@ -1,8 +1,3 @@
-#注意！！在
-###############################n
-#中间的部分需要先改成自己的路径才能用！
-###############################n
-
 #依赖的库：pandas, requests, BeautifulSoup, openai（直接本地pip就行）
 import pandas as pd
 import requests
@@ -23,11 +18,40 @@ client = OpenAI(
 df = pd.read_csv(FILE_PATHS["teams_file"])
 #########################################################1
 
-# 筛选出2024年的wiki
-filtered_urls = df[df['wiki'].astype(str).str.contains(SCRAPING_CONFIG["target_year"])]['wiki'].tolist()
-results = []
+# 读取数据
+original_count = len(df)
 
-# 创建一个空的DataFrame来存储结果
+# 应用筛选条件
+for key, value in FILTER_CONFIG.items():
+    if value is not None:
+        if key == "year":
+            df = df[df['wiki'].astype(str).str.contains(str(value))]
+        elif isinstance(value, list):
+            # 如果是列表，使用 isin 进行多值匹配
+            df = df[df[key].isin(value)]
+        else:
+            df = df[df[key] == value]
+
+filtered_count = len(df)
+
+# 输出筛选结果
+if filtered_count == 0:
+    print("⚠️ 警告：没有找到符合条件的队伍！请检查筛选条件。")
+    print("\n筛选条件：")
+    for key, value in FILTER_CONFIG.items():
+        if value is not None:
+            print(f"- {key}: {value}")
+    exit()
+else:
+    print(f"✅ 成功找到 {filtered_count} 支符合条件的队伍（原始数据共 {original_count} 支队伍）")
+    print("\n使用的筛选条件：")
+    for key, value in FILTER_CONFIG.items():
+        if value is not None:
+            print(f"- {key}: {value}")
+    print("\n开始处理队伍信息...\n")
+
+# 获取筛选后的 wiki URLs
+filtered_urls = df['wiki'].tolist()
 result_df = pd.DataFrame(columns=["url", "content"])
 #########################################################2
 output_path = FILE_PATHS["output_file"]
@@ -66,7 +90,7 @@ for url in filtered_urls:
 
             # 使用配置的提示词模板
             prompt = PROMPT_TEMPLATE.format(
-                year=SCRAPING_CONFIG["target_year"],
+                year=FILTER_CONFIG["year"],
                 text=text
             )
 
@@ -88,4 +112,7 @@ for url in filtered_urls:
     
     time.sleep(SCRAPING_CONFIG["sleep_time"])
 
-print(f"所有 {SCRAPING_CONFIG['target_year']} 年的wiki已解析完成，结果保存在 {FILE_PATHS['output_file']}")
+# 更新最终输出信息
+print(f"\n✨ 处理完成！")
+print(f"- 共处理 {filtered_count} 支队伍")
+print(f"- 结果已保存至：{FILE_PATHS['output_file']}")
