@@ -314,17 +314,12 @@ python main.py
 
 ## 常见问题解决
 
-1. OpenAI API 版本问题：
+1. 代理连接问题：
    ```bash
-   pip install openai==0.28.0
+   pip install socksio
    ```
 
-2. 代理连接问题：
-   ```bash
-   pip install httpx[socks]
-   ```
-
-3. 配置文件问题：
+2. 配置文件问题：
    - 确保所有配置项都已正确设置
    - 检查文件路径是否正确
    - 验证 API 密钥格式
