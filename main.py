@@ -27,10 +27,13 @@ for key, value in FILTER_CONFIG.items():
         if key == "year":
             df = df[df['wiki'].astype(str).str.contains(str(value))]
         elif isinstance(value, list):
-            # 如果是列表，使用 isin 进行多值匹配
+            # 对于列表值，先清理数据再进行匹配
+            df[key] = df[key].str.strip()  # 清理前后空格
             df = df[df[key].isin(value)]
         else:
-            df = df[df[key] == value]
+            # 对于单个值，也清理数据再匹配
+            df[key] = df[key].str.strip()  # 清理前后空格
+            df = df[df[key] == str(value).strip()]
 
 filtered_count = len(df)
 

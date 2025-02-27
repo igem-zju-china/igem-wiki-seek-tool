@@ -6,11 +6,36 @@ WikiSeek 是一个专门为 iGEM 比赛设计的 Wiki 页面智能分析工具�
 
 ## 主要功能
 
-- 🔍 自动筛选特定年份的参赛队伍 Wiki
+- 🔍 自动筛选参赛队伍 Wiki
+  - 支持年份、地区、国家等多维度筛选
+  - 支持单值和多值筛选条件
+  - 实时显示筛选结果统计
+
 - 📑 智能提取 Description 页面的关键内容
+  - 自动处理页面文本
+  - 智能清理无关内容
+  - 控制文本长度在合理范围
+
 - 🤖 利用 ChatGPT 生成项目要点分析
-- 💾 自动保存分析结果，支持断点续传
-- 🛡️ 内置重试机制，提高运行稳定性
+  - 自动提取项目名称
+  - 分析问题背景
+  - 总结解决方案
+  - 突出创新要点
+
+- 💾 自动保存分析结果
+  - 支持断点续传
+  - CSV 格式易于处理
+  - 实时保存进度
+
+- 🛡️ 内置重试机制
+  - 自动处理网络错误
+  - 智能调整重试间隔
+  - 提高运行稳定性
+
+- 📊 数据统计功能
+  - 显示处理进度
+  - 统计筛选结果
+  - 展示可用筛选选项
 
 ## 安装指南
 
@@ -70,7 +95,7 @@ pip install -r requirements.txt
        "year": "2024",          # 年份筛选
        "region": ["asia", "europe"],  # 支持多个地区
        "country": ["USA", "FIN"],  # 支持多个国家
-       "village": None,         # 赛区筛选
+       "village": None,         # 赛道筛选
        "kind": None,           # 项目类型筛选
        "section": None,        # 部分筛选
        "is_remote": False      # 是否远程
@@ -79,15 +104,49 @@ pip install -r requirements.txt
 
 ### 筛选配置说明
 
+#### 可用的筛选值
+
+1. **Village 类别**:
+   - Measurement
+   - Manufacturing
+   - New Application
+   - Environment
+   - Diagnostics
+   - Foundational Advance
+   - Bioremediation
+   - Oncology
+   - Entrepreneurship
+   - Energy
+   - Therapeutics
+   - Health & Medicine
+   - Food & Nutrition
+   - Space
+   - Information Processing
+   - Climate Crisis
+   - Agriculture
+   - Software Tools
+   - Art & Design
+   - 等...
+
+2. **Region 地区**:
+   - Asia
+   - Europe
+   - America
+
+3. **Section 类别**:
+   - overgrad
+   - undergrad
+   - collegiate
+
 #### 基本用法
 - 单一值筛选：直接指定值
   ```python
-  "country": "FIN"
+  "village": "Therapeutics"
   ```
 
 - 多值筛选：使用列表
   ```python
-  "region": ["asia", "europe"]
+  "village": ["Therapeutics", "Diagnostics"]
   ```
 
 - 不进行筛选：使用 None
@@ -97,34 +156,41 @@ pip install -r requirements.txt
 
 #### 筛选示例
 
-1. **按地区和年份筛选**
+1. **按特定领域和年份筛选**
    ```python
    FILTER_CONFIG = {
        "year": "2024",
-       "region": ["Asia", "Europe"],
+       "village": "Therapeutics",
        "country": None,
        # 其他条件设为 None
    }
    ```
 
-2. **特定国家的非远程团队**
+2. **多个领域的非远程团队**
    ```python
    FILTER_CONFIG = {
        "year": "2024",
-       "country": ["China", "Japan"],
+       "village": ["Therapeutics", "Diagnostics"],
        "is_remote": False,
        # 其他条件设为 None
    }
    ```
 
-3. **单一赛区筛选**
+3. **特定地区的本科生团队**
    ```python
    FILTER_CONFIG = {
        "year": "2024",
-       "village": "Paris",
+       "region": "asia",
+       "section": "undergrad",
        # 其他条件设为 None
    }
    ```
+
+#### 注意事项
+1. 筛选值需要完全匹配，注意大小写
+2. 某些分类可能随年份变化
+3. 建议先用较少的筛选条件测试
+4. 如果没有匹配结果，程序会显示可用的选项
 
 #### 运行结果展示
 程序运行时会显示：
@@ -153,12 +219,36 @@ python main.py
 
 ## 主要功能
 
-- 🔍 自动筛选特定年份的参赛队伍 Wiki
+- 🔍 自动筛选参赛队伍 Wiki
+  - 支持年份、地区、国家等多维度筛选
+  - 支持单值和多值筛选条件
+  - 实时显示筛选结果统计
+
 - 📑 智能提取 Description 页面的关键内容
+  - 自动处理页面文本
+  - 智能清理无关内容
+  - 控制文本长度在合理范围
+
 - 🤖 利用 ChatGPT 生成项目要点分析
-- 💾 自动保存分析结果，支持断点续传
-- 🛡️ 内置重试机制，提高运行稳定性
-- ⚙️ 灵活的配置系统，支持自定义分析
+  - 自动提取项目名称
+  - 分析问题背景
+  - 总结解决方案
+  - 突出创新要点
+
+- 💾 自动保存分析结果
+  - 支持断点续传
+  - CSV 格式易于处理
+  - 实时保存进度
+
+- 🛡️ 内置重试机制
+  - 自动处理网络错误
+  - 智能调整重试间隔
+  - 提高运行稳定性
+
+- 📊 数据统计功能
+  - 显示处理进度
+  - 统计筛选结果
+  - 展示可用筛选选项
 
 ## 配置说明
 
