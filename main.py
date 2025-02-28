@@ -110,7 +110,8 @@ for url in filtered_urls:
     
     # 保存结果
     result_df = pd.concat([result_df, new_row], ignore_index=True)
-    result_df.to_csv(output_path, index=False)
+    result_df.to_csv(output_path, index=False, encoding="utf-8-sig")
+    
     print(f"已保存结果：{modified_url}")
     
     time.sleep(SCRAPING_CONFIG["sleep_time"])
